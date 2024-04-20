@@ -2,6 +2,13 @@ var config = {
     type: Phaser.AUTO,
     width: 800,
     height: 600,
+    physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: {y: 300},
+            debug: false
+        }
+    },
     scene: {
         preload: preload,
         create: create,
@@ -23,7 +30,14 @@ function preload(){
 // Show the resources previously preloaded in the game
 function create(){
     this.add.image(400, 300, 'sky');
-    this.add.image(400, 300, 'star'); // Adding the star next to the sky makes it appears above the sky in the web
+    // this.add.image(400, 300, 'star'); // Adding the star next to the sky makes it appears above the sky in the game
+
+    platforms = this.physics.add.staticGroup(); // I am telling that the platforms objects are going to be static (don't move)
+
+    platforms.create(400, 568, 'ground').setScale(2); // Put an object in the game
+    platforms.create(600, 400, 'ground');
+    platforms.create(50, 250, 'ground');
+    platforms.create(750, 220, 'ground');
 }
 
 function update(){

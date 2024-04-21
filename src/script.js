@@ -16,6 +16,9 @@ var config = {
     }
 };
 
+var score = 0;
+var scoreText;
+
 var game = new Phaser.Game(config);
 
 // Preload all the resources needed for the game
@@ -42,7 +45,7 @@ function create(){
     player = this.physics.add.sprite(100, 450, 'dude');
 
     player.setCollideWorldBounds(true); // Make the object can't go out of the screen
-    player.setBounce(0.2); // Make the object bounce when hit another object or screen limit
+    player.setBounce(0); // Make the object bounce when hit another object or screen limit
 
     this.anims.create({
         key: 'left', // Name of the animation
@@ -83,6 +86,8 @@ function create(){
     this.physics.add.collider(stars, platforms);
 
     this.physics.add.overlap(player, stars, collectStar, null, true); // When player and stars collide, function collectStar is called
+
+    scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#fff'}); // Add text to the screen
 }
 
 function update(){
@@ -104,5 +109,8 @@ function update(){
 
 // Function to collect the stars
 function collectStar(player, star){
-    star.disableBody(true, true);
+    star.disableBody(true, true); // Remove the object
+
+    score += 1;
+    scoreText.setText('Score: ' + score);
 }

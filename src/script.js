@@ -47,20 +47,20 @@ function create(){
     this.anims.create({
         key: 'left', // Name of the animation
         frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }), // What sprites should the animation use
-        frameRete: 10, // Frames per second
+        frameRate: 10, // Frames per second
         repeat: -1 // -1 means that when animation comes to sprite 3, it starts again in sprite 0
     });
 
     this.anims.create({
         key: 'turn',
         frames: [ { key: 'dude', frame: 4 } ],
-        frameRete: 20
+        frameRate: 20
     });
 
     this.anims.create({
         key: 'right',
         frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
-        frameRete: 10,
+        frameRate: 10,
         repeat: -1
     });
 
@@ -69,6 +69,20 @@ function create(){
     this.physics.add.collider(player, platforms); // Add collisions between two objects
 
     cursors = this.input.keyboard.createCursorKeys(); // Check buttom pressed by the player, WASD
+
+    stars = this.physics.add.group({ // Create a dinamic group
+        key: 'star', // What sprite use
+        repeat: 11, // How many stars add
+        setXY: {x: 12, y:0, stepX:70} // Where to add each star
+    })
+
+    stars.children.iterate(function(child){ // Iterate all the group members and make them bounce when hit the ground
+        child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+    });
+
+    this.physics.add.collider(stars, platforms);
+
+    this.physics.add.overlap(player, stars, collectStar, null, true); // When player and stars collide, function collectStar is called
 }
 
 function update(){
@@ -86,4 +100,9 @@ function update(){
     if(cursors.up.isDown && player.body.touching.down){ // Check if player is jumping and in the ground
         player.setVelocityY(-330);
     }
+}
+
+// Function to collect the stars
+function collectStar(player, star){
+    star.disableBody(true, true);
 }

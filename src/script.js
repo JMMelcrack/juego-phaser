@@ -63,6 +63,10 @@ function create(){
         frameRete: 10,
         repeat: -1
     });
+
+    player.body.setGravityY(300); // Change the gravity for an especific object
+
+    this.physics.add.collider(player, platforms); // Add collisions between two objects
 }
 
 function update(){

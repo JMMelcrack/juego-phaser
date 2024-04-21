@@ -46,29 +46,44 @@ function create(){
 
     this.anims.create({
         key: 'left', // Name of the animation
-        frame: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }), // What sprites should the animation use
+        frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }), // What sprites should the animation use
         frameRete: 10, // Frames per second
         repeat: -1 // -1 means that when animation comes to sprite 3, it starts again in sprite 0
     });
 
     this.anims.create({
         key: 'turn',
-        frame: [ { key: 'dude', frame: 4 } ],
+        frames: [ { key: 'dude', frame: 4 } ],
         frameRete: 20
     });
 
     this.anims.create({
         key: 'right',
-        frame: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
+        frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
         frameRete: 10,
         repeat: -1
     });
 
-    player.body.setGravityY(300); // Change the gravity for an especific object
+    //player.body.setGravityY(300); // Change the gravity for an especific object
 
     this.physics.add.collider(player, platforms); // Add collisions between two objects
+
+    cursors = this.input.keyboard.createCursorKeys(); // Check buttom pressed by the player, WASD
 }
 
 function update(){
+    if(cursors.left.isDown){ // What to do when left buttom is clicked
+        player.setVelocityX(-160);
+        player.anims.play('left', true);
+    } else if(cursors.right.isDown){ // Right
+        player.setVelocityX(160);
+        player.anims.play('right', true);
+    } else{ // Nothing pressed
+        player.setVelocityX(0);
+        player.anims.play('turn', true);
+    }
 
+    if(cursors.up.isDown && player.body.touching.down){ // Check if player is jumping and in the ground
+        player.setVelocityY(-330);
+    }
 }

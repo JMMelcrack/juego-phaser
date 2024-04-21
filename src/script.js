@@ -34,10 +34,35 @@ function create(){
 
     platforms = this.physics.add.staticGroup(); // I am telling that the platforms objects are going to be static (don't move)
 
-    platforms.create(400, 568, 'ground').setScale(2); // Put an object in the game
+    platforms.create(400, 568, 'ground').setScale(2).refreshBody(); // Put an object in the game, then scalate it to be the floor of the game and refresh its physics
     platforms.create(600, 400, 'ground');
     platforms.create(50, 250, 'ground');
     platforms.create(750, 220, 'ground');
+
+    player = this.physics.add.sprite(100, 450, 'dude');
+
+    player.setCollideWorldBounds(true); // Make the object can't go out of the screen
+    player.setBounce(0.2); // Make the object bounce when hit another object or screen limit
+
+    this.anims.create({
+        key: 'left', // Name of the animation
+        frame: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }), // What sprites should the animation use
+        frameRete: 10, // Frames per second
+        repeat: -1 // -1 means that when animation comes to sprite 3, it starts again in sprite 0
+    });
+
+    this.anims.create({
+        key: 'turn',
+        frame: [ { key: 'dude', frame: 4 } ],
+        frameRete: 20
+    });
+
+    this.anims.create({
+        key: 'right',
+        frame: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
+        frameRete: 10,
+        repeat: -1
+    });
 }
 
 function update(){

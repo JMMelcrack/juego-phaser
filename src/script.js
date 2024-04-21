@@ -19,6 +19,8 @@ var config = {
 var score = 0;
 var scoreText;
 
+var gameOver = false;
+
 var game = new Phaser.Game(config);
 
 // Preload all the resources needed for the game
@@ -88,9 +90,19 @@ function create(){
     this.physics.add.overlap(player, stars, collectStar, null, true); // When player and stars collide, function collectStar is called
 
     scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#fff'}); // Add text to the screen
+
+    bombs = this.physics.add.group();
+
+    this.physics.add.collider(bombs, platforms);
+    this.physics.add.collider(player, bombs, hitBomb, null, this);
 }
 
 function update(){
+    // Check if the player is dead
+    if(gameOver){
+        return;
+    }
+
     if(cursors.left.isDown){ // What to do when left buttom is clicked
         player.setVelocityX(-160);
         player.anims.play('left', true);
@@ -113,4 +125,27 @@ function collectStar(player, star){
 
     score += 1;
     scoreText.setText('Score: ' + score);
+
+    if(stars.countActive(true) === 0){ // When the player have collected all the stars we add more
+        stars.children.iterate(function(child){
+            child.enableBody(true, child.x, 0, true, true);
+        });
+    }
+
+    var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
+
+    var bomb = bombs.create(x, 16, 'bomb'); // Add a bomb to the map
+    bomb.setBounce(1);
+    bomb.setCollideWorldBounds(true);
+    bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
+}
+
+// Function that kills the player when he hits a bomb
+function hitBomb(player, bombs){
+    this.physics.pause();
+
+    player.setTint(0xff0000); // Tint the player red
+    player.anims.play('turn');
+
+    gameOver = true;
 }
